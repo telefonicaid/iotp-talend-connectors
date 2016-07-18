@@ -1,0 +1,120 @@
+/**
+ * Copyright 2016 Telefonica Investigación y Desarrollo, S.A.U
+ *
+ * This file is part of iotp-talend-connectors.
+ *
+ * iotp-talend-connectors is free software: you can redistribute it and/or modify it under the terms of the GNU Affero
+ * General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your
+ * option) any later version.
+ * iotp-talend-connectors is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with iotp-talend-connectors. If not,
+ * see http://www.gnu.org/licenses/.
+ *
+ * For those usages not covered by the GNU Affero General Public License please contact with iot_support at tid dot es
+ */
+<%@ jet
+	imports="
+		org.talend.core.model.process.INode
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+		java.util.List
+    	java.util.Map
+	"
+%>
+<%
+	// Get the CID
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+    String cid = node.getUniqueName();
+
+    // Get the component parameters
+    String loggerFile = ElementParameterParser.getValue(node, "__LOG4J_FILE__");
+    String loggerLevel = ElementParameterParser.getValue(node, "__LOG4J_LEVEL__");
+    String authEndpoint = ElementParameterParser.getValue(node, "__AUTH_ENDPOINT__");
+    String authUsername = ElementParameterParser.getValue(node, "__AUTH_USERNAME__");
+    String authPassword = ElementParameterParser.getValue(node, "__AUTH_PASSWORD__");
+    String fiwareService = ElementParameterParser.getValue(node, "__FIWARE_SERVICE__");
+	String fiwareServicePath = ElementParameterParser.getValue(node, "__FIWARE_SERVICE_PATH__");
+	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+%>
+	// Get a log4j logger
+	org.apache.log4j.FileAppender fa = new org.apache.log4j.FileAppender();
+	fa.setName("FileLogger");
+	fa.setFile("<%=loggerFile%>");
+	fa.setLayout(new org.apache.log4j.PatternLayout("time=%d{yyyy-MM-dd}T%d{HH:mm:ss.SSS}Z | lvl=%p | "
+			+ "corr=%X{correlatorId} | trans=%X{transactionId} | srv=%X{service} | subsrv=%X{subservice} | "
+			+ "function=%M | comp=%X{agent} | msg=%C[%L] : %m%n"));
+	fa.setThreshold(org.apache.log4j.Level.<%=loggerLevel%>);
+	fa.setAppend(true);
+	fa.activateOptions();
+	org.apache.log4j.Logger.getRootLogger().getLoggerRepository().resetConfiguration();
+	org.apache.log4j.Logger.getRootLogger().addAppender(fa);
+	org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(this.getClass());
+	
+	// Start
+	System.out.println("[INFO] [<%=cid%>] Starting");
+    logger.info("[<%=cid%>] Starting");
+    
+	// Records counter
+	int nb_line_<%=cid %> = 0;
+	
+	// Default entity ID counter, used for those rows not having a value forthe ID
+	int defaultId_<%=cid %> = 0;
+	
+	// Get a Http client
+	org.apache.commons.httpclient.HttpClient client_<%=cid %> = new org.apache.commons.httpclient.HttpClient();
+	
+    // Get an Auth token if not using an existing connection, or if using an existing connection but the token is null
+    String token_<%=cid %> = null;
+    
+	if (("true").equals("<%=useExistingConn%>")) {
+		token_<%=cid%> = (String) globalMap.get("__AUTH_TOKEN__");
+    } // if
+    
+    if (token_<%=cid %> == null) {
+		org.apache.commons.httpclient.methods.PostMethod method1_<%=cid%> =
+				new org.apache.commons.httpclient.methods.PostMethod("<%=authEndpoint%>");
+	    method1_<%=cid%>.setRequestHeader(new org.apache.commons.httpclient.Header("Content-Type", "application/json"));
+	    String jsonStr1_<%=cid%> = "{\"auth\": {\"identity\": {\"methods\": [\"password\"],\"password\": {"
+    		+ "\"user\": {\"domain\": {\"name\": \"<%=fiwareService%>\"},\"name\": \"<%=authUsername%>\","
+    		+ "\"password\": \"<%=authPassword%>\"}}},\"scope\": {\"domain\": {\"name\": \"<%=fiwareService%>\""
+            + "}}}}";
+	    method1_<%=cid%>.setRequestBody(jsonStr1_<%=cid%>);
+	
+	    try {
+	    	System.out.println("[DEBUG] [<%=cid%>] Request: POST <%=authEndpoint%> " + jsonStr1_<%=cid%>);
+	    	logger.debug("[<%=cid%>] Request: POST <%=authEndpoint%> " + jsonStr1_<%=cid%>);
+	    	int statusCode_<%=cid %> = client_<%=cid%>.executeMethod(method1_<%=cid%>);
+	
+			if (statusCode_<%=cid%> != org.apache.commons.httpclient.HttpStatus.SC_CREATED) {
+				System.err.println("[ERROR] [<%=cid%>] Method failed: " + method1_<%=cid%>.getStatusLine());
+				logger.error("[<%=cid%>] Method failed: " + method1_<%=cid%>.getStatusLine());
+			} // if
+	
+			token_<%=cid%> = method1_<%=cid%>.getResponseHeader("X-Subject-Token").getValue();
+			System.out.println("[INFO] [<%=cid%>] Token obtained: " + token_<%=cid%>);
+			logger.info("[<%=cid%>] Token obtained: " + token_<%=cid%>);
+			
+			// Expose the token in the global map
+    		globalMap.put("__AUTH_TOKEN__", token_<%=cid%>);
+	    } catch (org.apache.commons.httpclient.HttpException e_<%=cid%>) {
+	    	System.err.println("[ERROR] [<%=cid%>] Fatal protocol violation: " + e_<%=cid%>.getMessage());
+	    	logger.error("[<%=cid%>] Fatal protocol violation: " + e_<%=cid%>.getMessage());
+	      	e_<%=cid %>.printStackTrace();
+	    } catch (IOException e_<%=cid%>) {
+	    	System.err.println("[ERROR] [<%=cid%>] Fatal transport error: " + e_<%=cid%>.getMessage());
+	    	logger.error("[<%=cid%>] Fatal transport error: " + e_<%=cid%>.getMessage());
+	      	e_<%=cid%>.printStackTrace();
+	    } finally {
+	      	method1_<%=cid%>.releaseConnection();
+	    } // try
+	} // if else
