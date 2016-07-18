@@ -18,7 +18,7 @@ Specifically, these are the categories under which this project adds custom comp
 For each category of custom components there is an **Installation and Administration Guide** and an **User and Programmer Guide**.
 
 ##Licensing
-Telefonica IoTP Talend Connectors is licensed under Affero General Public License (GPL) version 3. You can find a [copy of this license in the repository](./LICENSE).
+Talend Connectors for Telefonica IoT Platform is licensed under Affero General Public License (GPL) version 3. You can find a [copy of this license in the repository](./LICENSE).
 
 ##Reporting issues and contact information
 Any issue or doubt you may have, please refer to this [link](./reporting_issues_and_contact.md).
