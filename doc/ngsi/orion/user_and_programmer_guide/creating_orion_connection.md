@@ -11,7 +11,7 @@ In the palette, within the package <i>NGSI/Orion</i>, there is a Talend componen
 
 * Log4j log file.
 * Log4j level.
-* Http-like Orion service endopoint, typically running on TCP/1026 port.
+* Http-like Orion service endpoint, typically running on TCP/1026 port.
 * Http-like Keystone authentication endpoint.
 * Username to be authenticated in the FIWARE service.
 * Password for the above username.
