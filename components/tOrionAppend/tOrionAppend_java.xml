@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright 2016 Telefonica Investigación y Desarrollo, S.A.U
+ 
+ This file is part of iotp-talend-connectors.
+ 
+ iotp-talend-connectors is free software: you can redistribute it and/or modify it under the terms of the GNU Affero
+ General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your
+ option) any later version.
+ iotp-talend-connectors is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+ implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+ for more details.
+ 
+ You should have received a copy of the GNU Affero General Public License along with iotp-talend-connectors. If not,
+ see http://www.gnu.org/licenses/.
+ 
+ For those usages not covered by the GNU Affero General Public License please contact with iot_support at tid dot es
+-->
+<COMPONENT> 
+  <HEADER AUTHOR="frb" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="false" PLATEFORM="ALL" RELEASE_DATE="20160629" SERIAL="" STARTABLE="false" STATUS="ALPHA" VERSION="0.1"> 
+    <SIGNATURE/> 
+  </HEADER>  
+  <FAMILIES> 
+    <FAMILY>NGSI/Orion</FAMILY> 
+  </FAMILIES>  
+  <DOCUMENTATION> 
+    <URL>https://github.com/telefonicaid/iotp-talend-connectors</URL>
+  </DOCUMENTATION>  
+  <CONNECTORS> 
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="0"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="COMPONENT_OK"/>
+    <CONNECTOR CTYPE="COMPONENT_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/> 
+  </CONNECTORS>  
+  <PARAMETERS>
+    <PARAMETER NAME="LOG4J_FILE" FIELD="TEXT" REQUIRED="true" NUM_ROW="1"/>
+    <PARAMETER NAME="LOG4J_LEVEL" FIELD="TEXT" REQUIRED="true" NUM_ROW="2"/>
+	<PARAMETER NAME="USE_EXISTING_CONNECTION" FIELD="CHECK" NUM_ROW="3">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    <PARAMETER NAME="ORION_INSTANCE" FIELD="COMPONENT_LIST" REQUIRED="true" FILTER="tOrionConnection" NUM_ROW="4"
+      	SHOW_IF="USE_EXISTING_CONNECTION == 'true'" DYNAMIC_SETTINGS="true"/>
+    <PARAMETER NAME="ORION_ENDPOINT" FIELD="TEXT" REQUIRED="true" NUM_ROW="5" SHOW_IF="USE_EXISTING_CONNECTION == 'false'"/>
+    <PARAMETER NAME="AUTH_ENDPOINT" FIELD="TEXT" REQUIRED="true" NUM_ROW="6" SHOW_IF="USE_EXISTING_CONNECTION == 'false'"/>
+    <PARAMETER NAME="AUTH_USERNAME" FIELD="TEXT" REQUIRED="true" NUM_ROW="7" SHOW_IF="USE_EXISTING_CONNECTION == 'false'"/>
+    <PARAMETER NAME="AUTH_PASSWORD" FIELD="PASSWORD" REQUIRED="true" NUM_ROW="8" SHOW_IF="USE_EXISTING_CONNECTION == 'false'"/>
+    <PARAMETER NAME="FIWARE_SERVICE" FIELD="TEXT" REQUIRED="true" NUM_ROW="9" SHOW_IF="USE_EXISTING_CONNECTION == 'false'"/>
+    <PARAMETER NAME="FIWARE_SERVICE_PATH" FIELD="TEXT" REQUIRED="true" NUM_ROW="10" SHOW_IF="USE_EXISTING_CONNECTION == 'false'"/>
+    <PARAMETER NAME="RELATIVE_SERVICE_PATH_FIELD" FIELD="TEXT" REQUIRED="false" NUM_ROW="11"/>
+    <PARAMETER NAME="SINGLE_ENTITY" FIELD="CHECK" REQUIRED="true" NUM_ROW="12"/>
+    <PARAMETER NAME="ENTITY_ID" FIELD="TEXT" REQUIRED="true" NUM_ROW="13" SHOW_IF="SINGLE_ENTITY == 'true'"/>
+    <PARAMETER NAME="ENTITY_TYPE" FIELD="TEXT" REQUIRED="true" NUM_ROW="14" SHOW_IF="SINGLE_ENTITY == 'true'"/>
+    <PARAMETER NAME="ENTITY_ID_FIELD" FIELD="TEXT" REQUIRED="false" NUM_ROW="15" SHOW_IF="SINGLE_ENTITY == 'false'"/>
+    <PARAMETER NAME="ENTITY_TYPE_FIELD" FIELD="TEXT" REQUIRED="false" NUM_ROW="16" SHOW_IF="SINGLE_ENTITY == 'false'"/>
+    <PARAMETER NAME="DEFAULT_ENTITY_TYPE" FIELD="TEXT" REQUIRED="true" NUM_ROW="17" SHOW_IF="SINGLE_ENTITY == 'false'"/>
+    <PARAMETER NAME="IGNORED_FIELDS" FIELD="TEXT" REQUIRED="false" NUM_ROW="18"/>
+    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1"/>
+  </PARAMETERS>  
+  <ADVANCED_PARAMETERS/> 
+  <CODEGENERATION>
+    <IMPORTS>
+      <IMPORT NAME="commons-httpclient" MODULE="commons-httpclient-3.1.jar" REQUIRED="true"/>
+      <IMPORT NAME="commons-logging" MODULE="commons-logging-1.2.jar" REQUIRED="true"/>
+      <IMPORT NAME="commons-codec" MODULE="commons-codec-1.10.jar" REQUIRED="true"/>
+      <IMPORT NAME="json-simple" MODULE="json-simple-1.1.1.jar" REQUIRED="true"/>
+    </IMPORTS>
+  </CODEGENERATION>  
+  <RETURNS> 
+    <RETURN AVAILABILITY="AFTER" NAME="NB_LINE" TYPE="id_Integer"/> 
+  </RETURNS> 
+</COMPONENT>

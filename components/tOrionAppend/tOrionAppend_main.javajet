@@ -1,0 +1,206 @@
+/**
+ * Copyright 2016 Telefonica Investigación y Desarrollo, S.A.U
+ *
+ * This file is part of iotp-talend-connectors.
+ *
+ * iotp-talend-connectors is free software: you can redistribute it and/or modify it under the terms of the GNU Affero
+ * General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your
+ * option) any later version.
+ * iotp-talend-connectors is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with iotp-talend-connectors. If not,
+ * see http://www.gnu.org/licenses/.
+ *
+ * For those usages not covered by the GNU Affero General Public License please contact with iot_support at tid dot es
+ */
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+		java.util.List 
+    	java.util.Map
+	" 
+%>
+<%
+	// Get the CID
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+    String cid = node.getUniqueName();
+
+	// Get the component parameters
+	String orionEndpoint = ElementParameterParser.getValue(node, "__ORION_ENDPOINT__");
+	String fiwareService = ElementParameterParser.getValue(node, "__FIWARE_SERVICE__");
+	String fiwareServicePath = ElementParameterParser.getValue(node, "__FIWARE_SERVICE_PATH__");
+	String singleEntity = ElementParameterParser.getValue(node, "__SINGLE_ENTITY__");
+	String entityId = ElementParameterParser.getValue(node, "__ENTITY_ID__");
+	String entityType = ElementParameterParser.getValue(node, "__ENTITY_TYPE__");
+    String relativeServicePathField = ElementParameterParser.getValue(node, "__RELATIVE_SERVICE_PATH_FIELD__");
+    String entityIdField = ElementParameterParser.getValue(node, "__ENTITY_ID_FIELD__");
+    String entityTypeField = ElementParameterParser.getValue(node, "__ENTITY_TYPE_FIELD__");
+    String defaultEntityType = ElementParameterParser.getValue(node, "__DEFAULT_ENTITY_TYPE__");
+    String ignoredFieldsStr = ElementParameterParser.getValue(node, "__IGNORED_FIELDS__");
+    java.util.ArrayList<String> ignoredFields = new java.util.ArrayList<String>(
+    		java.util.Arrays.asList(ignoredFieldsStr.split(",")));
+    String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+%>
+	// Compose the Json to be appended, and get the service and service path
+	java.util.HashMap<String, Object> json_<%=cid%> = new java.util.HashMap<String, Object>();
+	String rowStr_<%=cid%> = null;
+<%
+	// Get the only one incoming connection
+	List< ? extends IConnection> conns = node.getIncomingConnections();
+	IConnection conn = conns.get(0);
+    String connName = conn.getName();
+	
+	// Iterate on the columns of the input schema
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	
+	if ((metadatas != null) && (metadatas.size() > 0)) {
+		IMetadataTable metadata = metadatas.get(0);
+
+		if (metadata != null) {
+			List<IMetadataColumn> columns = metadata.getListColumns();
+					
+			for (int i = 0; i < columns.size(); i++) {
+				IMetadataColumn column = columns.get(i);
+				String columnLabel = column.getLabel();
+				String columnType = column.getType();
+%>
+				if (rowStr_<%=cid%> == null) {
+					rowStr_<%=cid%> = "<%=columnLabel%>=" + <%=connName%>.<%=columnLabel%> + " (<%=columnType%>)";
+				} else {
+					rowStr_<%=cid%> += ",<%=columnLabel%>=" + <%=connName%>.<%=columnLabel%> + " (<%=columnType%>)";
+				} // if else
+<%
+				if (columnLabel.equals(entityIdField) && ("false").equals(singleEntity)) {
+%>
+					json_<%=cid%>.put("id", <%=connName%>.<%=columnLabel%>);
+<%
+				} else if (columnLabel.equals(entityTypeField) && ("false").equals(singleEntity)) {
+%>
+					json_<%=cid%>.put("type", <%=connName%>.<%=columnLabel%>);
+<%
+				} else if (!ignoredFields.contains(columnLabel)) {
+%>
+					java.util.HashMap<String, String> attribute<%=columnLabel%>_<%=cid%> =
+							new java.util.HashMap<String, String>();
+					attribute<%=columnLabel%>_<%=cid%>.put("value", <%=connName%>.<%=columnLabel%>.toString());
+					attribute<%=columnLabel%>_<%=cid%>.put("type", "<%=columnType%>");
+					json_<%=cid%>.put("<%=columnLabel%>", attribute<%=columnLabel%>_<%=cid%>);
+<%
+				} else if (columnLabel.equals(relativeServicePathField)) {
+%>
+					//relativeServicePath_<%=cid%> = <%=connName%>.<%=columnLabel%>;
+<%
+				} // if else
+			} // for
+%>			
+			if (!json_<%=cid%>.containsKey("id")) {
+				if (("true").equals("<%=singleEntity%>")) {
+					json_<%=cid%>.put("id", "<%=entityId%>");
+				} else {
+					json_<%=cid%>.put("id", "ID" + defaultId_<%=cid%>);
+					defaultId_<%=cid%>++;
+				} // if else
+			} // if
+			
+			if (!json_<%=cid%>.containsKey("type")){
+				if (("true").equals("<%=singleEntity%>")) {
+					json_<%=cid%>.put("type", "<%=entityType%>");
+				} else {
+					json_<%=cid%>.put("type", "<%=defaultEntityType%>");
+				} // if else
+			} // if
+<%
+		} // if
+	} // if
+%>
+	if (rowStr_<%=cid%> != null) {
+		// Update the records counter
+		nb_line_<%=cid%>++;
+		System.out.println("[INFO] [<%=cid%>] Row: " + rowStr_<%=cid%>);
+		logger.info("[<%=cid%>] Row: " + rowStr_<%=cid%>);
+		
+		// Do the append through Orion API (NGSIv2)
+		String url_<%=cid%>;
+		String service_<%=cid%>;
+		String servicePath_<%=cid%>;
+		
+		if (("true").equals("<%=useExistingConn%>")) {
+			url_<%=cid%> = (String) globalMap.get("__ORION_ENDPOINT__") + "/v2/op/update";
+			service_<%=cid%> = (String) globalMap.get("__FIWARE_SERVICE__");
+			servicePath_<%=cid%> = (String) globalMap.get("__FIWARE_SERVICE_PATH__");
+		} else {
+			url_<%=cid%> = "<%=orionEndpoint%>/v2/op/update";
+			service_<%=cid%> = "<%=fiwareService%>";
+			servicePath_<%=cid%> = "<%=fiwareServicePath%>";
+		} // if else
+		 
+	    org.apache.commons.httpclient.methods.PostMethod method2_<%=cid%> =
+	    		new org.apache.commons.httpclient.methods.PostMethod(url_<%=cid%>);
+	    method2_<%=cid%>.setRequestHeader(new org.apache.commons.httpclient.Header("X-Auth-Token", token_<%=cid%>));
+	    method2_<%=cid%>.setRequestHeader(new org.apache.commons.httpclient.Header("FIWARE-Service", service_<%=cid%>));
+	    method2_<%=cid%>.setRequestHeader(new org.apache.commons.httpclient.Header("FIWARE-ServicePath", servicePath_<%=cid%>));
+	    method2_<%=cid%>.setRequestHeader(new org.apache.commons.httpclient.Header("Content-Type", "application/json"));
+	    String jsonStr2_<%=cid%> = "{\"actionType\":\"APPEND\",\"entities\":[{\"id\":\""
+	    		+ json_<%=cid%>.get("id") + "\",\"type\":\"" + json_<%=cid%>.get("type") + "\"";	
+	    java.util.Iterator it_<%=cid%> = json_<%=cid%>.entrySet().iterator();
+	    
+	    while (it_<%=cid%>.hasNext()) {
+	        java.util.Map.Entry pair_<%=cid%> = (java.util.Map.Entry) it_<%=cid%>.next();
+	        String key_<%=cid%> = (String) pair_<%=cid%>.getKey();
+	        
+	        if (!key_<%=cid%>.equals("id") && !key_<%=cid%>.equals("type")) {
+		        java.util.HashMap<String, String> attribute_<%=cid%> =
+		        		(java.util.HashMap<String, String>) pair_<%=cid%>.getValue();
+		    	jsonStr2_<%=cid%> += ",\"" + key_<%=cid%> + "\":{\"value\":\"" + attribute_<%=cid%>.get("value")
+		    			+ "\",\"type\":\"" + attribute_<%=cid%>.get("type") + "\"}";
+		    } // if
+	    } // while
+	    
+	    jsonStr2_<%=cid%> += "}]}";
+	    method2_<%=cid%>.setRequestBody(jsonStr2_<%=cid%>);
+	    
+	    try {
+	    	System.out.println("[DEBUG] [<%=cid%>] Request: POST " + url_<%=cid%>
+	    			+ " X-Auth-Token: " + token_<%=cid%>
+	    			+ " FIWARE-Service: " + service_<%=cid%>
+	    			+ " FIWARE-ServicePath: " + servicePath_<%=cid%>
+	    			+ " " + jsonStr2_<%=cid%>);
+	    	logger.debug("[<%=cid%>] Request: POST " + url_<%=cid%>
+	    			+ " X-Auth-Token: " + token_<%=cid%>
+	    			+ " FIWARE-Service: " + service_<%=cid%>
+	    			+ " FIWARE-ServicePath: " + servicePath_<%=cid%>
+	    			+ " " + jsonStr2_<%=cid%>);
+	    	int statusCode_<%=cid%> = client_<%=cid%>.executeMethod(method2_<%=cid%>);
+			byte[] responseBody_<%=cid%> = method2_<%=cid%>.getResponseBody();
+			
+			if(responseBody_<%=cid%> == null || responseBody_<%=cid %>.length == 0) {
+				System.out.println("[DEBUG] [<%=cid%>] Response: " + statusCode_<%=cid%>);
+				logger.debug("[<%=cid%>] Response: " + statusCode_<%=cid%>);
+			} else {
+				String response_<%=cid%> = new String(responseBody_<%=cid%>);
+				System.out.println("[DEBUG] [<%=cid%>] Response: " + statusCode_<%=cid%> + " " + response_<%=cid%>);
+				logger.debug("[<%=cid%>] Response: " + statusCode_<%=cid%> + " " + response_<%=cid%>);
+			} // if else
+	    } catch (org.apache.commons.httpclient.HttpException e_<%=cid%>) {
+			System.err.println("[ERROR] [<%=cid%>] Fatal protocol violation: " + e_<%=cid%>.getMessage());
+			logger.error("[<%=cid%>] Fatal protocol violation: " + e_<%=cid%>.getMessage());
+	      	e_<%=cid%>.printStackTrace();
+	    } catch (IOException e_<%=cid%>) {
+	      	System.err.println("[ERROR] [<%=cid%>] Fatal transport error: " + e_<%=cid%>.getMessage());
+	      	logger.error("[<%=cid%>] Fatal transport error: " + e_<%=cid%>.getMessage());
+	      	e_<%=cid%>.printStackTrace();
+	    } finally {
+	      	method2_<%=cid%>.releaseConnection();
+	    } // try
+	} // if

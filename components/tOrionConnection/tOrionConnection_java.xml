@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright 2016 Telefonica Investigación y Desarrollo, S.A.U
+ 
+ This file is part of iotp-talend-connectors.
+ 
+ iotp-talend-connectors is free software: you can redistribute it and/or modify it under the terms of the GNU Affero
+ General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your
+ option) any later version.
+ iotp-talend-connectors is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+ implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+ for more details.
+ 
+ You should have received a copy of the GNU Affero General Public License along with iotp-talend-connectors. If not,
+ see http://www.gnu.org/licenses/.
+ 
+ For those usages not covered by the GNU Affero General Public License please contact with iot_support at tid dot es
+-->
+<COMPONENT> 
+  <HEADER AUTHOR="frb" COMPATIBILITY="ALL" DATA_AUTO_PROPAGATE="false" PLATEFORM="ALL" RELEASE_DATE="20160629" SERIAL="" STARTABLE="true" STATUS="ALPHA" VERSION="0.1"> 
+    <SIGNATURE/> 
+  </HEADER>  
+  <FAMILIES> 
+    <FAMILY>NGSI/Orion</FAMILY>
+  </FAMILIES>
+  <DOCUMENTATION>
+    <URL>https://github.com/telefonicaid/iotp-talend-connectors</URL>
+  </DOCUMENTATION>
+  <CONNECTORS> 
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="COMPONENT_OK"/>
+    <CONNECTOR CTYPE="COMPONENT_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>  
+  <PARAMETERS>
+    <PARAMETER NAME="LOG4J_FILE" FIELD="TEXT" REQUIRED="true" NUM_ROW="1"/>
+    <PARAMETER NAME="LOG4J_LEVEL" FIELD="TEXT" REQUIRED="true" NUM_ROW="2"/>
+    <PARAMETER NAME="ORION_ENDPOINT" FIELD="TEXT" REQUIRED="true" NUM_ROW="3"/>
+    <PARAMETER NAME="AUTH_ENDPOINT" FIELD="TEXT" REQUIRED="true" NUM_ROW="4"/>
+    <PARAMETER NAME="AUTH_USERNAME" FIELD="TEXT" REQUIRED="true" NUM_ROW="5"/>
+    <PARAMETER NAME="AUTH_PASSWORD" FIELD="PASSWORD" REQUIRED="true" NUM_ROW="6"/>
+    <PARAMETER NAME="FIWARE_SERVICE" FIELD="TEXT" REQUIRED="true" NUM_ROW="7"/>
+    <PARAMETER NAME="FIWARE_SERVICE_PATH" FIELD="TEXT" REQUIRED="true" NUM_ROW="8"/>
+  </PARAMETERS>  
+  <ADVANCED_PARAMETERS/> 
+  <CODEGENERATION/>  
+  <RETURNS> 
+    <RETURN AVAILABILITY="AFTER" NAME="NB_LINE" TYPE="id_Integer"/> 
+  </RETURNS> 
+</COMPONENT>
