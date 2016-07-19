@@ -14,17 +14,15 @@ pages:
       - 'Installation and Administration Guide':
           - 'Introduction': 'ngsi/orion/installation_and_administration_guide/introduction.md'
           - 'Configuring Talend Open Studio': 'ngsi/orion/installation_and_administration_guide/configuring_tos.md'
-          - 'Reporting issues and contact information': 'ngsi/orion/installation_and_administration_guide/issues_and_contact.md'
       - 'User and Programmer Guide':
           - 'Introduction': 'ngsi/orion/user_and_programmer_guide/introduction.md'
           - 'Creating an Orion connection': 'ngsi/orion/user_and_programmer_guide/creating_orion_connection.md'
           - 'Appending data to Orion': 'ngsi/orion/user_and_programmer_guide/appending_data.md'
           - 'Querying data from Orion': 'ngsi/orion/user_and_programmer_guide/querying_data.md'
-          - 'Reporting issues and contact information': 'ngsi/orion/user_and_programmer_guide/issues_and_contact.md'
       - 'Talend components catalogue':
           - 'Introduction': 'ngsi/orion/talend_components_catalogue/introduction.md'
           - 'tOrionConnection': 'ngsi/orion/talend_components_catalogue/t_orion_connection.md'
           - 'tOrionAppend': 'ngsi/orion/talend_components_catalogue/t_orion_append.md'
           - 'tOrionQuery': 'ngsi/orion/talend_components_catalogue/t_orion_query.md'
-          - 'Reporting issues and contact information': 'ngsi/orion/talend_components_catalogue/issues_and_contact.md'
+      - 'Reporting issues and contact information': 'ngsi/orion/issues_and_contact.md'
 
