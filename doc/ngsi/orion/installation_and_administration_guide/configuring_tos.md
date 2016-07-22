@@ -72,7 +72,7 @@ The new added components must appear in the *Palette* if looking by the *tOrion*
 ##Troubleshooting
 If the components don't appear in the *Palette*, try the following:
 
-1. Delete the components cache of TOS. This is a file named `ComponentsCache.javacache` under `/pat/to/TOS/configuration` folder.
+1. Delete the components cache of TOS. This is a file named `ComponentsCache.javacache` under `/path/to/TOS/configuration` folder.
 2. Open the *Component Designer* view of TOS: click *Window* in the toolbar, then follow this path: *Perspective > Component Designer*.
 3. In the *Component Designer* tab in the left, move the mouse over the components, click right and click *Push Components to Palette*.
 4. Return to the *Integration* view: click *Window* in the toolbar, then follow this path: *Perspective > Integration*.
