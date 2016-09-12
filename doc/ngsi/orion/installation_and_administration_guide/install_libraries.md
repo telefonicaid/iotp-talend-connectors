@@ -38,7 +38,7 @@ This occurs when TOS is able to find the library on Talend website. None of the 
 ###The library must be found in the file system
 This occurs when TOS is not able to find the library on Talend website. In this case, the Java .jar file implementing the library must be found by the administrator him/herself and copied somewhere in the file system in order it can be selected.
 
-Regarding the .jar files required by the custom components develop for Telefónica's IoT Platform, there two options:
+Regarding the .jar files required by the custom components develop for Telefónica's IoT Platform, there are two options:
 
 * Download the .jar files from the Internet. [MVN Repository](https://mvnrepository.com/) is a good reference.
 * Use the distributed .jar file within the component zip downloaded from Talend Exchange.
@@ -49,3 +49,4 @@ Github [sources](https://github.com/telefonicaid/iotp-talend-connectors) don't p
 
 ##Further details
 Please, check the Official Talend Help Center [page](https://help.talend.com/display/KB/How+to+install+external+modules+in+the+Talend+products) detailing how to install external modules.
+
