@@ -1,2 +1,4 @@
 - [tOrionConnection] Add (#2)
 - [tOrionAppend] Add (#1)
+- [tOrionX] Document how to install the imports required by the components (#10)
+- [tOrionX] Configuration parameters must accept both strings and Java sentences (#9)
