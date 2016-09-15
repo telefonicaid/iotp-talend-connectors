@@ -51,6 +51,19 @@
     java.util.ArrayList<String> ignoredFields = new java.util.ArrayList<String>(
     		java.util.Arrays.asList(ignoredFieldsStr.split(",")));
     String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+    
+    if (orionEndpoint.equals("")) { orionEndpoint = "\"\""; }
+    if (fiwareService.equals("")) { fiwareService = "\"\""; }
+	if (fiwareServicePath.equals("")) { fiwareServicePath = "\"\""; }
+	if (singleEntity.equals("")) { singleEntity = "\"\""; }
+	if (entityId.equals("")) { entityId = "\"\""; }
+	if (entityType.equals("")) { entityType = "\"\""; }
+	if (relativeServicePathField.equals("")) { relativeServicePathField = "\"\""; }
+	if (entityIdField.equals("")) { entityIdField = "\"\""; }
+	if (entityTypeField.equals("")) { entityTypeField = "\"\""; }
+	if (defaultEntityType.equals("")) { defaultEntityType = "\"\""; }
+	if (ignoredFieldsStr.equals("")) { ignoredFieldsStr = "\"\""; }
+	if (useExistingConn.equals("")) { useExistingConn = "\"\""; }
 %>
 	// Compose the Json to be appended, and get the service and service path
 	java.util.HashMap<String, Object> json_<%=cid%> = new java.util.HashMap<String, Object>();
@@ -105,8 +118,8 @@
 			} // for
 %>			
 			if (!json_<%=cid%>.containsKey("id")) {
-				if (("true").equals("<%=singleEntity%>")) {
-					json_<%=cid%>.put("id", "<%=entityId%>");
+				if (<%=singleEntity%>) {
+					json_<%=cid%>.put("id", <%=entityId%>);
 				} else {
 					json_<%=cid%>.put("id", "ID" + defaultId_<%=cid%>);
 					defaultId_<%=cid%>++;
@@ -114,10 +127,10 @@
 			} // if
 			
 			if (!json_<%=cid%>.containsKey("type")){
-				if (("true").equals("<%=singleEntity%>")) {
-					json_<%=cid%>.put("type", "<%=entityType%>");
+				if (<%=singleEntity%>) {
+					json_<%=cid%>.put("type", <%=entityType%>);
 				} else {
-					json_<%=cid%>.put("type", "<%=defaultEntityType%>");
+					json_<%=cid%>.put("type", <%=defaultEntityType%>);
 				} // if else
 			} // if
 <%
@@ -135,14 +148,14 @@
 		String service_<%=cid%>;
 		String servicePath_<%=cid%>;
 		
-		if (("true").equals("<%=useExistingConn%>")) {
+		if (<%=useExistingConn%>) {
 			url_<%=cid%> = (String) globalMap.get("__ORION_ENDPOINT__") + "/v2/op/update";
 			service_<%=cid%> = (String) globalMap.get("__FIWARE_SERVICE__");
 			servicePath_<%=cid%> = (String) globalMap.get("__FIWARE_SERVICE_PATH__");
 		} else {
-			url_<%=cid%> = "<%=orionEndpoint%>/v2/op/update";
-			service_<%=cid%> = "<%=fiwareService%>";
-			servicePath_<%=cid%> = "<%=fiwareServicePath%>";
+			url_<%=cid%> = <%=orionEndpoint%> + "/v2/op/update";
+			service_<%=cid%> = <%=fiwareService%>;
+			servicePath_<%=cid%> = <%=fiwareServicePath%>;
 		} // if else
 		 
 	    org.apache.commons.httpclient.methods.PostMethod method2_<%=cid%> =
