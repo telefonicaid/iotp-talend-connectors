@@ -22,9 +22,13 @@ Simply drag and drop the `tOrionConnection` component from the Palette to the jo
 
 ![Drag and drop tOrionConnection](./images/t_orion_connection_add.png)
 
-Now, it is time to configure it through the basic settings:
+Now, it is time to configure it through the basic settings (Component tab):
 
 ![tOrionConnection configuration](./images/t_orion_connection_conf.png)
+
+Please observe the Contexts tab has been used in order to centralize the configuration:
+
+![Contexts](./images/t_orion_x_contexts.png)
 
 As said, once created this `tOrionConnection` many other components from <i>NGSI/Orion</i> will be able to reuse its configuration.
 
