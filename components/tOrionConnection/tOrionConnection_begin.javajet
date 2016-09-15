@@ -45,15 +45,44 @@
     String authPassword = ElementParameterParser.getValue(node, "__AUTH_PASSWORD__");
     String fiwareService = ElementParameterParser.getValue(node, "__FIWARE_SERVICE__");
 	String fiwareServicePath = ElementParameterParser.getValue(node, "__FIWARE_SERVICE_PATH__");
+	
+	if (loggerFile.equals("")) { loggerFile = "\"\""; }
+	if (loggerLevel.equals("")) { loggerLevel = "\"\""; }
+	if (orionEndpoint.equals("")) { orionEndpoint = "\"\""; }
+	if (authEndpoint.equals("")) { authEndpoint = "\"\""; }
+	if (authUsername.equals("")) { authUsername = "\"\""; }
+	if (authPassword.equals("")) { authPassword = "\"\""; }
+	if (fiwareService.equals("")) { fiwareService = "\"\""; }
+	if (fiwareServicePath.equals("")) { fiwareServicePath = "\"\""; }
 %>  	
 	// Get a log4j logger
 	org.apache.log4j.FileAppender fa = new org.apache.log4j.FileAppender();
 	fa.setName("FileLogger");
-	fa.setFile("<%=loggerFile%>");
+	fa.setFile(<%=loggerFile%>);
 	fa.setLayout(new org.apache.log4j.PatternLayout("time=%d{yyyy-MM-dd}T%d{HH:mm:ss.SSS}Z | lvl=%p | "
 			+ "corr=%X{correlatorId} | trans=%X{transactionId} | srv=%X{service} | subsrv=%X{subservice} | "
 			+ "function=%M | comp=%X{agent} | msg=%C[%L] : %m%n"));
-	fa.setThreshold(org.apache.log4j.Level.<%=loggerLevel%>);
+	
+	if (<%=loggerLevel%>.equals("ALL")) {
+		fa.setThreshold(org.apache.log4j.Level.ALL);
+	} else if (<%=loggerLevel%>.equals("DEBUG")) {
+		fa.setThreshold(org.apache.log4j.Level.DEBUG);
+	} else if (<%=loggerLevel%>.equals("ERROR")) {
+		fa.setThreshold(org.apache.log4j.Level.ERROR);
+	} else if (<%=loggerLevel%>.equals("FATAL")) {
+		fa.setThreshold(org.apache.log4j.Level.FATAL);
+	} else if (<%=loggerLevel%>.equals("INFO")) {
+		fa.setThreshold(org.apache.log4j.Level.INFO);
+	} else if (<%=loggerLevel%>.equals("OFF")) {
+		fa.setThreshold(org.apache.log4j.Level.OFF);
+	} else if (<%=loggerLevel%>.equals("TRACE")) {
+		fa.setThreshold(org.apache.log4j.Level.TRACE);
+	} else if (<%=loggerLevel%>.equals("WARN")) {
+		fa.setThreshold(org.apache.log4j.Level.WARN);
+	} else {
+		fa.setThreshold(org.apache.log4j.Level.INFO);
+	} // if else
+			
 	fa.setAppend(true);
 	fa.activateOptions();
 	org.apache.log4j.Logger.getRootLogger().getLoggerRepository().resetConfiguration();
@@ -69,18 +98,18 @@
 	
     // Get an auth token
 	org.apache.commons.httpclient.methods.PostMethod method1_<%=cid%> =
-			new org.apache.commons.httpclient.methods.PostMethod("<%=authEndpoint%>");
+			new org.apache.commons.httpclient.methods.PostMethod(<%=authEndpoint%>);
     method1_<%=cid%>.setRequestHeader(new org.apache.commons.httpclient.Header("Content-Type", "application/json"));
     String jsonStr1_<%=cid%> = "{\"auth\": {\"identity\": {\"methods\": [\"password\"],\"password\": {"
-    		+ "\"user\": {\"domain\": {\"name\": \"<%=fiwareService%>\"},\"name\": \"<%=authUsername%>\","
-    		+ "\"password\": \"<%=authPassword%>\"}}},\"scope\": {\"domain\": {\"name\": \"<%=fiwareService%>\""
-            + "}}}}";
+    		+ "\"user\": {\"domain\": {\"name\": \"" + <%=fiwareService%> + "\"},\"name\": \"" + <%=authUsername%>
+    		+ "\",\"password\": \"" + <%=authPassword%> + "\"}}},\"scope\": {\"domain\": {\"name\": \""
+    		+ <%=fiwareService%> + "\"}}}}";
     method1_<%=cid%>.setRequestBody(jsonStr1_<%=cid%>);
     String token_<%=cid%> = null;
 
     try {
-    	System.out.println("[DEBUG] [<%=cid%>] Request: POST <%=authEndpoint%> " + jsonStr1_<%=cid%>);
-    	logger.debug("[<%=cid%>] Request: POST <%=authEndpoint%> " + jsonStr1_<%=cid%>);
+    	System.out.println("[DEBUG] [<%=cid%>] Request: POST " + <%=authEndpoint%> + " " + jsonStr1_<%=cid%>);
+    	logger.debug("[<%=cid%>] Request: POST " + <%=authEndpoint%> + " " + jsonStr1_<%=cid%>);
     	int statusCode_<%=cid%> = client_<%=cid%>.executeMethod(method1_<%=cid%>);
 
 		if (statusCode_<%=cid%> != org.apache.commons.httpclient.HttpStatus.SC_CREATED) {
@@ -107,9 +136,9 @@
     globalMap.put("__AUTH_TOKEN__", token_<%=cid%>);
     
     // Expose the component parameters in the global map
-	globalMap.put("__ORION_ENDPOINT__", "<%=orionEndpoint%>");
-	globalMap.put("__AUTH_ENDPOINT__", "<%=authEndpoint%>");
-	globalMap.put("__AUTH_USERNAME__", "<%=authUsername%>");
-	globalMap.put("__AUTH_PASSWORD__", "<%=authPassword%>");
-	globalMap.put("__FIWARE_SERVICE__", "<%=fiwareService%>");
-	globalMap.put("__FIWARE_SERVICE_PATH__", "<%=fiwareServicePath%>");
+	globalMap.put("__ORION_ENDPOINT__", <%=orionEndpoint%>);
+	globalMap.put("__AUTH_ENDPOINT__", <%=authEndpoint%>);
+	globalMap.put("__AUTH_USERNAME__", <%=authUsername%>);
+	globalMap.put("__AUTH_PASSWORD__", <%=authPassword%>);
+	globalMap.put("__FIWARE_SERVICE__", <%=fiwareService%>);
+	globalMap.put("__FIWARE_SERVICE_PATH__", <%=fiwareServicePath%>);

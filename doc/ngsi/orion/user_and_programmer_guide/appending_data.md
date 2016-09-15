@@ -69,6 +69,10 @@ Please observe the component allows considering all the records to be related to
 
 ![tOrionAppend configuration](./images/t_orion_append_conf_alt.png)
 
+Please observe as well the Contexts tab has been used in order to centralize the configuration:
+
+![Contexts tab](./images/t_orion_x_contexts.png)
+
 ##Running
 Running the above job results in the following output:
 
