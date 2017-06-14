@@ -1,4 +1,4 @@
-#Creating an Orion connection
+# Creating an Orion connection
 Creating an Orion connection means binding to a certain FIWARE service among all the services handled by a real Orion endpoint, by means of a Keystone token that only an authenticated and authorized user in that FIWARE service is able to obtain.
 
 Creating this kind of connection is not mandatory, but highly recommended in terms of configuration reusing. If not used, most of the configuration details needed in the connection will have to be replicated in every Orion-related Talend component.
