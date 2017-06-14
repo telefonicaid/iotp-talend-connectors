@@ -1,4 +1,4 @@
-#User and Programmer Guide
+# User and Programmer Guide
 
 * [Introduction](./introduction.md)
 * [Creating an Orion connection](./creating_orion_connection.md)
