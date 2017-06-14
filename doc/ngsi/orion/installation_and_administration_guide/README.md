@@ -1,4 +1,4 @@
-#Installation and Configuration Guide
+# Installation and Configuration Guide
 
 * [Introduction](./introduction.md)
 * [Configuring Talend Open Studio](./configuring_tos.md)
