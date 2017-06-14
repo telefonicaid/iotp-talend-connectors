@@ -1,5 +1,5 @@
-#Appending data
-##Job definition
+# Appending data
+## Job definition
 Start by creating a new job if you did not create it yet:
 
 ![Create a job](./images/create_job.png)
@@ -36,23 +36,23 @@ Then, these three subjobs are chained by means of triggers:
 
 ![Subjob triggers](./images/t_orion_append_subjob_triggers.png)
 
-##Components configuration
-###`tOrionConnection` configuration
+## Components configuration
+### `tOrionConnection` configuration
 This is assumed to be already configured. Check the [documentation](./creating_orion_connection.md) for further details.
 
-###`tMySQLConnection` configuration
+### `tMySQLConnection` configuration
 Simply configure the host, port, database, username and password for MySQL:
 
 ![tMySQLConnection configuration](./images/t_orion_append_t_mysql_connection_conf.png)
 
-###`tMySQLInput` configuration
+### `tMySQLInput` configuration
 Simply use the above MySQL connection, and configure the table name:
 
 ![tMySQLInput configuration](./images/t_orion_append_t_mysql_input_conf.png)
 
 It is important to guess the schema at this time, and propagate it to `tOrionAppend`.
 
-###`tOrionAppend` configuration
+### `tOrionAppend` configuration
 ![tOrionAppend configuration](./images/t_orion_append_conf.png)
 
 First of all, it is necessary to select an existent Orion connection (`tOrionConnection_1` of type `tOronConnection`) if we want to get access to its configuration (i.e. service and authentication endpoints, authentication credentials and FIWARE service and service path).
@@ -73,7 +73,7 @@ Please observe as well the Contexts tab has been used in order to centralize the
 
 ![Contexts tab](./images/t_orion_x_contexts.png)
 
-##Running
+## Running
 Running the above job results in the following output:
 
 ![tOrionAppend run](./images/t_orion_append_run.png)
@@ -82,5 +82,5 @@ As can be seen, first of all an authentication token is obtained for the configu
 
 Requests are of type `/v2/op/update`, as previously said. There is one request per each record (MySQL row) read, and its payload is a Json string built from the record data and based on the field mappings (and the default values) detailed in `tOrionAppend`.
 
-##Further reading
+## Further reading
 More details about `tOrionAppend` can be found in the [<i>Talend Components Catalogue</i>](../talend_components_catalogue/t_orion_append.md).
