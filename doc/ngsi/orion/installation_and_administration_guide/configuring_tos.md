@@ -1,11 +1,11 @@
-#<a name="top"></a>Configuring Talend Open Studio
+# <a name="top"></a>Configuring Talend Open Studio
 This section of the manual describes how to configure Talend Open Studio (TOS) in order to add to the Palette the custom components developed for Telefónica's IoT Platform.
 
 It is supposed a TOS is already installed. It is not in the scope of this document to guide you through the installation process. Please, check the Talend [documentation](https://www.talend.com/download/talend-open-studio). It is important to download and install the Data Integration flavour of TOS.
 
 [Top](#top)
 
-##Setting TOS preferences
+## Setting TOS preferences
 Open TOS and click *Window* in the toolbar, then follow this path: *Preferences > Talend > Component*. Then, simply configure the *User component folder* with a folder of your choice:
 
 ![](./images/setting_tos_preferences.png)
@@ -14,15 +14,15 @@ Finally, press *OK* to confirm.
 
 [Top](#top)
 
-##Downloading and installing the components
+## Downloading and installing the components
 There are two ways of downloading our custom components: [Talend Exchange](https://exchange.talend.com/) and [Github](https://github.com/telefonicaid/iotp-talend-connectors).
 
-###From Talend Exchange
+### From Talend Exchange
 Coming soon.
 
 [Top](#top)
 
-###From Github
+### From Github
 This way of downloading the components requires [Git](https://git-scm.com/) installed in your system.
 
 Start by cloning the [iotp-talend-connectors]((https://github.com/telefonicaid/iotp-talend-connectors)) Github repository somewhere in your file system:
@@ -62,14 +62,14 @@ $ cp -r components/* /path/to/components
 
 [Top](#top)
 
-##Checking the Palette
+## Checking the Palette
 The new added components must appear in the *Palette* if looking by the *tOrion* key word:
 
 ![](./images/palette.png)
 
 [Top](#top)
 
-##Troubleshooting
+## Troubleshooting
 If the components don't appear in the *Palette*, try the following:
 
 1. Delete the components cache of TOS. This is a file named `ComponentsCache.javacache` under `/path/to/TOS/configuration` folder.
